@@ -259,6 +259,11 @@ void send(uint16_t type, uint64_t data, uint16_t nbits);
                       uint16_t nbytes = HITACHI_AC2_STATE_LENGTH,
                       uint16_t repeat = 0);
 #endif
+#if SEND_DELONGHI
+  void sendDeLonghi(unsigned char data[],
+                      uint16_t nbytes = DELONGHI_STATE_LENGTH,
+                      uint16_t repeat = 0);
+#endif
 #if SEND_GICABLE
   void sendGICable(uint64_t data, uint16_t nbits = GICABLE_BITS,
                    uint16_t repeat = GICABLE_MIN_REPEAT);
