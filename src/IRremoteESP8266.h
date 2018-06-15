@@ -256,8 +256,6 @@ enum decode_type_t {
 #define DAIKIN_RAW_BITS            583U
 #define DAIKIN_COMMAND_LENGTH       27U
 #define DAIKIN_BITS                 (DAIKIN_COMMAND_LENGTH * 8)
-#define DELONGHI_STATE_LENGTH       16U
-#define DELONGHI_BITS               (DELONGHI_STATE_LENGTH * 8)
 #define DENON_BITS                  SHARP_BITS
 #define DENON_48_BITS               PANASONIC_BITS
 #define DENON_LEGACY_BITS           14U

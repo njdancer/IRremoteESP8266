@@ -260,9 +260,8 @@ void send(uint16_t type, uint64_t data, uint16_t nbits);
                       uint16_t repeat = 0);
 #endif
 #if SEND_DELONGHI
-  void sendDeLonghi(unsigned char data[],
-                      uint16_t nbytes = DELONGHI_STATE_LENGTH,
-                      uint16_t repeat = 0);
+  void sendDeLonghi(uint64_t data_A, uint64_t data_B,
+                    uint16_t repeat = 0);
 #endif
 #if SEND_GICABLE
   void sendGICable(uint64_t data, uint16_t nbits = GICABLE_BITS,
