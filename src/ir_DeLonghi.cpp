@@ -11,7 +11,13 @@
 
 #define DELONGHI_POWER_OFFSET_1                3U
 #define DELONGHI_POWER_OFFSET_2               22U
-#define DELONGHI_MODE_OFFSET                   0U
+#define DELONGHI_MODE_MASK                   7ULL
+#define DELONGHI_TEMP_OFFSET                 8ULL
+#define DELONGHI_TEMP_MASK                 0xFULL << DELONGHI_TEMP_OFFSET
+
+#define DELONGHI_CHECKSUM_OFFSET              28U
+#define DELONGHI_CHECKSUM_MASK             0xFULL << DELONGHI_CHECKSUM_OFFSET
+
 
 #if SEND_DELONGHI
 // Send a DeLonghi A/C message.
@@ -41,23 +47,37 @@ IRDeLonghiAC::IRDeLonghiAC(uint16_t pin) : _irsend(pin) {
   stateReset();
 }
 
+void IRDeLonghiAC::stateReset() {
+  remote_state_A = 0;
+  // set display to be on
+  remote_state_A |= 1ULL << 21;
+  // unsure what these bits do but the remote doesn't work without them
+  remote_state_A |= 1ULL << 28;
+  remote_state_A |= 1ULL << 30;
+  remote_state_A |= 1ULL << 33;
+
+  remote_state_B = 0;
+}
+
 void IRDeLonghiAC::begin() {
   _irsend.begin();
 }
 
-void IRDeLonghiAC::stateReset() {
-  remote_state_A = 0;
-  remote_state_B = 0;
+#if SEND_DELONGHI
+void IRDeLonghiAC::send() {
+  checksum();
+  _irsend.sendDeLonghi(remote_state_A, remote_state_B);
+}
+#endif  // SEND_DELONGHI
+
+void IRDeLonghiAC::setMode(uint8_t mode) {
+  // If we get an unexpected mode, default to AUTO.
+  if (mode > DELONGHI_MODE_HEAT) mode = DELONGHI_MODE_AUTO;
+  remote_state_A |= mode;
 }
 
-void IRDeLonghiAC::on() {
-  remote_state_A |= 1ULL << DELONGHI_POWER_OFFSET_1;
-  remote_state_A |= 1ULL << DELONGHI_POWER_OFFSET_2;
-}
-
-void IRDeLonghiAC::off() {
-  remote_state_A &= ~(1ULL << DELONGHI_POWER_OFFSET_1);
-  remote_state_A &= ~(1ULL << DELONGHI_POWER_OFFSET_2);
+uint8_t IRDeLonghiAC::getMode() {
+  return (remote_state_A & DELONGHI_MODE_MASK);
 }
 
 void IRDeLonghiAC::setPower(bool state) {
@@ -71,8 +91,33 @@ bool IRDeLonghiAC::getPower() {
   return ((remote_state_A & (1ULL << DELONGHI_POWER_OFFSET_1)) != 0);
 }
 
-#if SEND_DELONGHI
-void IRDeLonghiAC::send() {
-  _irsend.sendDeLonghi(remote_state_A, remote_state_B);
+void IRDeLonghiAC::on() {
+  remote_state_A |= 1ULL << DELONGHI_POWER_OFFSET_1;
+  remote_state_A |= 1ULL << DELONGHI_POWER_OFFSET_2;
 }
-#endif  // SEND_DELONGHI
+
+void IRDeLonghiAC::off() {
+  remote_state_A &= ~(1ULL << DELONGHI_POWER_OFFSET_1);
+  remote_state_A &= ~(1ULL << DELONGHI_POWER_OFFSET_2);
+}
+
+void IRDeLonghiAC::setTemp(uint8_t temp) {
+  temp = std::max((uint8_t) DELONGHI_TEMP_MIN, temp);
+  temp = std::min((uint8_t) DELONGHI_TEMP_MAX, temp);
+  remote_state_A |= (temp - DELONGHI_TEMP_MIN) << DELONGHI_TEMP_OFFSET;
+}
+
+uint8_t IRDeLonghiAC::getTemp() {
+  return ((remote_state_A & DELONGHI_TEMP_MASK) >> DELONGHI_TEMP_OFFSET) + DELONGHI_TEMP_MIN;
+}
+
+void IRDeLonghiAC::checksum() {
+  uint64_t mask = 0xF;
+  uint8_t data1 = remote_state_A & mask;
+  uint8_t data2 = (remote_state_A >> DELONGHI_TEMP_OFFSET) & mask;
+
+  uint8_t sum = data1 + data2 - 6;
+  // reset checksum
+  remote_state_B &= ~DELONGHI_CHECKSUM_MASK;
+  remote_state_B |= (sum & mask) << DELONGHI_CHECKSUM_OFFSET;
+}

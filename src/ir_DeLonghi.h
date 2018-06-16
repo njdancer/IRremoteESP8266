@@ -1,5 +1,17 @@
+#ifndef IR_DELONGHI_H_
+#define IR_DELONGHI_H_
+
 #include "IRremoteESP8266.h"
 #include "IRsend.h"
+
+#define DELONGHI_MODE_AUTO                     0U
+#define DELONGHI_MODE_COOL                     1U
+#define DELONGHI_MODE_DRY                      2U
+#define DELONGHI_MODE_FAN                      3U
+#define DELONGHI_MODE_HEAT                     4U
+#define DELONGHI_TEMP_MIN                     16U  // 16C
+#define DELONGHI_TEMP_MAX                     30U  // 30C
+#define DELONGHI_TEMP_AUTO                    25U  // 25C
 
 /*
 	DeLonghi AC map
@@ -57,7 +69,7 @@
       01 (1) = Setting Temp
       10 (2) = Indoor Ambient Temp
       11 (3) = Outdoor Ambient Temp
-    b5 = I Feel(requires follow-up payload)
+    b5 = I Feel(requires follow-up payload which is repeated every 10 minutes)
   byte 6 = UNKNOWN, typically 0
   byte 7
     b6-0 = UNKNOWN, typically 0
@@ -73,21 +85,30 @@
 class IRDeLonghiAC {
 public:
   explicit IRDeLonghiAC(uint16_t pin);
-
   void stateReset();
+  void begin();
+
 #if SEND_DELONGHI
   void send();
 #endif  // SEND_DELONGHI
-  void begin();
-  void on();
-  void off();
+
+  void setMode(uint8_t mode);
+  uint8_t getMode();
   void setPower(bool state);
   bool getPower();
+  void on();
+  void off();
+  void setTemp(uint8_t temp);
+  uint8_t getTemp();
 
 private:
   // The state of the IR remote in IR code form.
   uint64_t remote_state_A;
   uint64_t remote_state_B;
 
+  void checksum();
+
   IRsend _irsend;
 };
+
+#endif  // IR_DELONGHI_H_
