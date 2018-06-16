@@ -6,9 +6,9 @@ public:
   explicit IRDeLonghiAC(uint16_t pin);
 
   void stateReset();
-#if SEND_KELVINATOR
+#if SEND_DELONGHI
   void send();
-#endif  // SEND_KELVINATOR
+#endif  // SEND_DELONGHI
   void begin();
   void on();
   void off();
