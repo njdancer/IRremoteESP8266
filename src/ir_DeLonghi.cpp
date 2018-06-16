@@ -1,13 +1,13 @@
 #include "ir_DeLonghi.h"
 
-#define DELONGHI_HDR_MARK                    8960U
-#define DELONGHI_HDR_SPACE                   4488U
-#define DELONGHI_BIT_MARK_TICKS              8U
+#define DELONGHI_HDR_MARK                   8960U
+#define DELONGHI_HDR_SPACE                  4488U
+#define DELONGHI_BIT_MARK_TICKS                8U
 #define DELONGHI_BIT_MARK                    634U
-#define DELONGHI_ONE_SPACE                   1660U
+#define DELONGHI_ONE_SPACE                  1660U
 #define DELONGHI_ZERO_SPACE                  566U
-#define DELONGHI_INTER_SPACE                   19962U
-#define DELONGHI_GAP                         100000U
+#define DELONGHI_INTER_SPACE               19962U
+#define DELONGHI_GAP                      100000U
 
 #define DELONGHI_POWER_OFFSET_1                3U
 #define DELONGHI_POWER_OFFSET_2               22U
