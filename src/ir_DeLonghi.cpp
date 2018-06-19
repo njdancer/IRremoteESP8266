@@ -112,6 +112,35 @@ uint8_t IRDeLonghiAC::getTemp() {
   return ((remote_state_A & DELONGHI_TEMP_MASK) >> DELONGHI_TEMP_OFFSET) + DELONGHI_TEMP_MIN;
 }
 
+uint64_t* IRDeLonghiAC::getRaw() {
+  uint64_t rawData[] = {remote_state_A, remote_state_B};
+  return rawData;
+}
+
+String IRDeLonghiAC::getRawBinary() {
+  String rawBinary;
+  uint8_t bitValue;
+
+  for (uint8_t i = 0; i < 35; i++) {
+    bitValue = (remote_state_A & (1ULL << i)) ? 1 : 0;
+    rawBinary += bitValue != 0 ? "1" : "0";
+  }
+
+  rawBinary += "-";
+
+  for (uint8_t i = 0; i < 32; i++) {
+    bitValue = (remote_state_B & (1ULL << i)) ? 1 : 0;
+    rawBinary += bitValue != 0 ? "1" : "0";
+  }
+
+  return rawBinary;
+}
+
+void IRDeLonghiAC::setRaw(uint64_t new_code[]) {
+  remote_state_A = new_code[0];
+  remote_state_B = new_code[1];
+}
+
 void IRDeLonghiAC::checksum() {
   uint64_t mask = 0xF;
   uint8_t data1 = remote_state_A & mask;

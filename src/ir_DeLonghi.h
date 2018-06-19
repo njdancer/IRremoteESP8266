@@ -100,6 +100,9 @@ public:
   void off();
   void setTemp(uint8_t temp);
   uint8_t getTemp();
+  uint64_t* getRaw();
+  String getRawBinary();
+  void setRaw(uint64_t new_code[]);
 
 private:
   // The state of the IR remote in IR code form.
