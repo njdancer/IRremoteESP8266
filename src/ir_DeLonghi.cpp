@@ -71,6 +71,7 @@ void IRDeLonghiAC::send() {
 #endif  // SEND_DELONGHI
 
 void IRDeLonghiAC::setMode(uint8_t mode) {
+  remote_state_A &= ~DELONGHI_MODE_MASK;
   // If we get an unexpected mode, default to AUTO.
   if (mode > DELONGHI_MODE_HEAT) mode = DELONGHI_MODE_AUTO;
   remote_state_A |= mode;
