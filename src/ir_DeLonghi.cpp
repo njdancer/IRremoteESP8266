@@ -9,9 +9,9 @@
 #define DELONGHI_INTER_SPACE               19962U
 #define DELONGHI_GAP                      100000U
 
+#define DELONGHI_MODE_MASK                   7ULL
 #define DELONGHI_POWER_OFFSET_1                3U
 #define DELONGHI_POWER_OFFSET_2               22U
-#define DELONGHI_MODE_MASK                   7ULL
 #define DELONGHI_TEMP_OFFSET                 8ULL
 #define DELONGHI_TEMP_MASK                 0xFULL << DELONGHI_TEMP_OFFSET
 
