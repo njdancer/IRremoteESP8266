@@ -1,6 +1,11 @@
 #ifndef IR_DELONGHI_H_
 #define IR_DELONGHI_H_
 
+#ifndef UNIT_TEST
+#include <Arduino.h>
+#else
+#include <string>
+#endif
 #include "IRremoteESP8266.h"
 #include "IRsend.h"
 
@@ -98,11 +103,25 @@ public:
   bool getPower();
   void on();
   void off();
+  void setFan(uint8_t fan);
+  uint8_t getFan();
+  void setSwingVertical(uint8_t state);
+  bool getSwingVertical();
   void setTemp(uint8_t temp);
   uint8_t getTemp();
+  void setTurbo(bool state);
+  bool getTurbo();
+  void setLight(bool state);
+  bool getLight();
+
   uint64_t* getRaw();
   String getRawBinary();
   void setRaw(uint64_t new_code[]);
+#ifdef ARDUINO
+  String toString();
+#else
+  std::string toString();
+#endif
 
 private:
   // The state of the IR remote in IR code form.
