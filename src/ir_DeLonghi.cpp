@@ -12,6 +12,9 @@
 #define DELONGHI_MODE_MASK                   7ULL
 #define DELONGHI_POWER_OFFSET_1                3U
 #define DELONGHI_POWER_OFFSET_2               22U
+#define DELONGHI_FAN_OFFSET                    4U
+#define DELONGHI_FAN_MASK                    3ULL << DELONGHI_FAN_OFFSET
+#define DELONGHO_SWING_OFFSET                  6U
 #define DELONGHI_TEMP_OFFSET                 8ULL
 #define DELONGHI_TEMP_MASK                 0xFULL << DELONGHI_TEMP_OFFSET
 
