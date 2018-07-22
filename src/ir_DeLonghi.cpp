@@ -74,7 +74,8 @@ void IRDeLonghiAC::send() {
 #endif  // SEND_DELONGHI
 
 void IRDeLonghiAC::setMode(uint8_t mode) {
-  remote_state_A &= ~DELONGHI_MODE_MASK;
+  uint64_t mask = DELONGHI_MODE_MASK;
+  remote_state_A &= ~mask;
   // If we get an unexpected mode, default to AUTO.
   if (mode > DELONGHI_MODE_HEAT) mode = DELONGHI_MODE_AUTO;
   remote_state_A |= mode;
@@ -106,6 +107,8 @@ void IRDeLonghiAC::off() {
 }
 
 void IRDeLonghiAC::setTemp(uint8_t temp) {
+  uint64_t mask = DELONGHI_TEMP_MASK;
+  remote_state_A &= ~mask;
   temp = std::max((uint8_t) DELONGHI_TEMP_MIN, temp);
   temp = std::min((uint8_t) DELONGHI_TEMP_MAX, temp);
   remote_state_A |= (temp - DELONGHI_TEMP_MIN) << DELONGHI_TEMP_OFFSET;
